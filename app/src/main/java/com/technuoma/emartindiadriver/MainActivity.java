@@ -2,6 +2,7 @@ package com.technuoma.emartindiadriver;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -14,6 +15,7 @@ import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +25,8 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -42,9 +46,6 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     // Tracks the bound state of the service.
     private boolean mBound = false;
 
-    // UI elements.
-    private Button mRequestLocationUpdatesButton;
-    private Button mRemoveLocationUpdatesButton;
 
     // Monitors the state of the connection to the service.
     private final ServiceConnection mServiceConnection = new ServiceConnection() {
@@ -63,11 +64,43 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         }
     };
 
+    Toolbar toolbar;
+    ProgressBar progress;
+    TextView txn , date , status , name , address , amount , pay , slot , deldate;
+
+    Button startend;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         myReceiver = new MyReceiver();
         setContentView(R.layout.activity_main);
+
+        toolbar = findViewById(R.id.toolbar2);
+        progress = findViewById(R.id.progressBar2);
+        txn = findViewById(R.id.textView27);
+        date = findViewById(R.id.textView28);
+        status = findViewById(R.id.textView35);
+        name = findViewById(R.id.textView32);
+        address = findViewById(R.id.textView34);
+        amount = findViewById(R.id.textView30);
+        pay = findViewById(R.id.textView40);
+        slot = findViewById(R.id.textView62);
+        deldate = findViewById(R.id.textView42);
+        startend = findViewById(R.id.button);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        toolbar.setTitleTextColor(Color.WHITE);
+        toolbar.setTitle("Order Details");
+        toolbar.setNavigationIcon(R.drawable.ic_back);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+
+        });
 
         // Check that the user hasn't revoked permissions by going to Settings.
         if (Utils.requestingLocationUpdates(this)) {
@@ -83,24 +116,23 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this);
 
-        mRequestLocationUpdatesButton = (Button) findViewById(R.id.request_location_updates_button);
-        mRemoveLocationUpdatesButton = (Button) findViewById(R.id.remove_location_updates_button);
-
-        mRequestLocationUpdatesButton.setOnClickListener(new View.OnClickListener() {
+        startend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!checkPermissions()) {
-                    requestPermissions();
-                } else {
-                    mService.requestLocationUpdates();
+
+                if (startend.getText().toString().equals("START"))
+                {
+                    if (!checkPermissions()) {
+                        requestPermissions();
+                    } else {
+                        mService.requestLocationUpdates();
+                    }
                 }
-            }
-        });
+                else
+                {
+                    mService.removeLocationUpdates();
+                }
 
-        mRemoveLocationUpdatesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mService.removeLocationUpdates();
             }
         });
 
@@ -253,11 +285,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
     private void setButtonsState(boolean requestingLocationUpdates) {
         if (requestingLocationUpdates) {
-            mRequestLocationUpdatesButton.setEnabled(false);
-            mRemoveLocationUpdatesButton.setEnabled(true);
+            startend.setText("FINISH");
         } else {
-            mRequestLocationUpdatesButton.setEnabled(true);
-            mRemoveLocationUpdatesButton.setEnabled(false);
+            startend.setText("START");
         }
     }
 }
