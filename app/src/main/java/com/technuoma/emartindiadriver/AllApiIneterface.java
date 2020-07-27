@@ -27,6 +27,12 @@ public interface AllApiIneterface {
     );
 
     @Multipart
+    @POST("emartindia/api/getCompletedDeliveries.php")
+    Call<ordersBean> getCompletedDeliveries(
+            @Part("id") String id
+    );
+
+    @Multipart
     @POST("emartindia/api/getDeliveryDetails.php")
     Call<deliveryDetailsBean> getDeliveryDetails(
             @Part("id") String id

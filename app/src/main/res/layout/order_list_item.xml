@@ -124,7 +124,7 @@
             android:id="@+id/textView40"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
+
             app:layout_constraintStart_toStartOf="@+id/textView32"
             app:layout_constraintTop_toTopOf="@+id/textView39" />
 
@@ -143,7 +143,6 @@
             android:id="@+id/textView42"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="TextView"
             app:layout_constraintStart_toStartOf="@+id/textView40"
             app:layout_constraintTop_toTopOf="@+id/textView41" />
 
@@ -163,7 +162,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="TextView"
             app:layout_constraintStart_toStartOf="@+id/textView42"
             app:layout_constraintTop_toBottomOf="@+id/textView42" />
     </androidx.constraintlayout.widget.ConstraintLayout>

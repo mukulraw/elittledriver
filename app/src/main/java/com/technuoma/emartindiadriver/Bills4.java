@@ -52,7 +52,6 @@ public class Bills4 extends Fragment {
     TextView date;
     LinearLayout linear;
 
-    String dd;
 
     @Nullable
     @Override
@@ -72,113 +71,8 @@ public class Bills4 extends Fragment {
         grid.setAdapter(adapter);
         grid.setLayoutManager(manager);
 
-        date.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        date.setVisibility(View.GONE);
 
-
-                final Dialog dialog = new Dialog(getActivity());
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setCancelable(true);
-                dialog.setContentView(R.layout.date_dialog);
-                dialog.show();
-
-
-                final DatePicker picker = dialog.findViewById(R.id.date);
-                Button ok = dialog.findViewById(R.id.ok);
-
-                long now = System.currentTimeMillis() - 1000;
-                picker.setMaxDate(now);
-
-                ok.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        int year = picker.getYear();
-                        int month = picker.getMonth();
-                        int day = picker.getDayOfMonth();
-
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.set(year, month, day);
-
-                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                        String strDate = format.format(calendar.getTime());
-
-                        dialog.dismiss();
-
-                        date.setText("Date - " + strDate + " (click to change)");
-
-                        dd = strDate;
-
-                        progress.setVisibility(View.VISIBLE);
-
-                        Bean b = (Bean) getActivity().getApplicationContext();
-
-                        Retrofit retrofit = new Retrofit.Builder()
-                                .baseUrl(b.baseurl)
-                                .addConverterFactory(ScalarsConverterFactory.create())
-                                .addConverterFactory(GsonConverterFactory.create())
-                                .build();
-
-                        AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
-
-
-                        Call<ordersBean> call = cr.getOngoingDeliveries(dd);
-
-                        call.enqueue(new Callback<ordersBean>() {
-                            @Override
-                            public void onResponse(Call<ordersBean> call, Response<ordersBean> response) {
-
-                                if (response.body().getStatus().equals("1")) {
-                                    adapter.setData(response.body().getData());
-                                    linear.setVisibility(View.GONE);
-                                } else {
-                                    adapter.setData(response.body().getData());
-                                    linear.setVisibility(View.VISIBLE);
-                                    //Toast.makeText(getContext(), response.body().getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-
-                                progress.setVisibility(View.GONE);
-
-                            }
-
-                            @Override
-                            public void onFailure(Call<ordersBean> call, Throwable t) {
-                                progress.setVisibility(View.GONE);
-                            }
-                        });
-
-
-                    }
-                });
-
-
-            }
-        });
-
-        Date c = Calendar.getInstance().getTime();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        String formattedDate = df.format(c);
-
-        Log.d("dddd", formattedDate);
-
-        date.setText("Date - " + formattedDate + " (click to change)");
-
-        dd = formattedDate;
-
-        singleReceiver = new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-
-                if (intent.getAction().equals("count")) {
-                    onResume();
-                }
-
-            }
-        };
-
-        LocalBroadcastManager.getInstance(getContext()).registerReceiver(singleReceiver,
-                new IntentFilter("count"));
 
         return view;
     }
@@ -188,7 +82,6 @@ public class Bills4 extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
 
 
         progress.setVisibility(View.VISIBLE);
@@ -204,7 +97,7 @@ public class Bills4 extends Fragment {
         AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
 
 
-        Call<ordersBean> call = cr.getOngoingDeliveries(dd);
+        Call<ordersBean> call = cr.getCompletedDeliveries(SharePreferenceUtils.getInstance().getString("id"));
 
         call.enqueue(new Callback<ordersBean>() {
             @Override
@@ -267,6 +160,8 @@ public class Bills4 extends Fragment {
             holder.slot.setText(item.getSlot());
             holder.amount.setText("\u20B9 " + item.getAmount());
 
+            holder.deldate.setText(item.getDeliveryDate());
+
 
 /*
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -290,7 +185,7 @@ public class Bills4 extends Fragment {
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
-            TextView txn , date , status , name , address , amount , pay , slot;
+            TextView txn , date , status , name , address , amount , pay , slot , deldate;
 
 
             ViewHolder(@NonNull View itemView) {
@@ -303,7 +198,8 @@ public class Bills4 extends Fragment {
                 address = itemView.findViewById(R.id.textView34);
                 amount = itemView.findViewById(R.id.textView30);
                 pay = itemView.findViewById(R.id.textView40);
-                slot = itemView.findViewById(R.id.textView42);
+                slot = itemView.findViewById(R.id.textView62);
+                deldate = itemView.findViewById(R.id.textView42);
 
 
             }
