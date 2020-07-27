@@ -167,8 +167,11 @@ public class Bills3 extends Fragment {
                 @Override
                 public void onClick(View v) {
 
+                    Log.d("order1" , item.getOrderId());
+
                     Intent intent = new Intent(context , MainActivity.class);
-                    intent.putExtra("oid" , item.getId());
+                    intent.putExtra("oid" , item.getDelId());
+                    intent.putExtra("order" , item.getOrderId());
                     startActivity(intent);
 
                 }

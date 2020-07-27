@@ -1,12 +1,12 @@
 /**
  * Copyright 2017 Google Inc. All Rights Reserved.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -46,6 +46,14 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.technuoma.emartindiadriver.deliveryDetailsPOJO.deliveryDetailsBean;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 /**
  * A bound and started service that is promoted to a foreground service when location updates have
@@ -319,12 +327,50 @@ public class LocationUpdatesService extends Service {
 
         mLocation = location;
 
-        Toast.makeText(this, "Latitude" + location.getLatitude(), Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Latitude" + location.getLatitude(), Toast.LENGTH_SHORT).show();
 
         // Notify anyone listening for broadcasts about the new location.
         Intent intent = new Intent(ACTION_BROADCAST);
         intent.putExtra(EXTRA_LOCATION, location);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
+
+        try {
+            Bean b = (Bean) getApplicationContext();
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(b.baseurl)
+                    .addConverterFactory(ScalarsConverterFactory.create())
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+            Log.d("order11" , SharePreferenceUtils.getInstance().getString("order"));
+
+            Call<deliveryDetailsBean> call = cr.addLogs(
+                    SharePreferenceUtils.getInstance().getString("id"),
+                    SharePreferenceUtils.getInstance().getString("order"),
+                    String.valueOf(location.getLatitude()),
+                    String.valueOf(location.getLongitude())
+            );
+
+            call.enqueue(new Callback<deliveryDetailsBean>() {
+                @Override
+                public void onResponse(Call<deliveryDetailsBean> call, Response<deliveryDetailsBean> response) {
+
+                }
+
+                @Override
+                public void onFailure(Call<deliveryDetailsBean> call, Throwable t) {
+
+                }
+            });
+        }catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+
 
         // Update notification content if running as a foreground service.
         if (serviceIsRunningInForeground(this)) {

@@ -30,6 +30,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.technuoma.emartindiadriver.deliveryDetailsPOJO.Data;
+import com.technuoma.emartindiadriver.deliveryDetailsPOJO.deliveryDetailsBean;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -68,7 +77,9 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     ProgressBar progress;
     TextView txn , date , status , name , address , amount , pay , slot , deldate;
 
-    Button startend;
+    Button startend , callphone;
+
+    String del_id , order;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +87,13 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         myReceiver = new MyReceiver();
         setContentView(R.layout.activity_main);
 
+        del_id = getIntent().getStringExtra("oid");
+        order = getIntent().getStringExtra("order");
+
+        Log.d("order2" , order);
+
         toolbar = findViewById(R.id.toolbar2);
+        callphone = findViewById(R.id.button3);
         progress = findViewById(R.id.progressBar2);
         txn = findViewById(R.id.textView27);
         date = findViewById(R.id.textView28);
@@ -108,6 +125,69 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 requestPermissions();
             }
         }
+
+        progress.setVisibility(View.VISIBLE);
+
+        Bean b = (Bean) getApplicationContext();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(b.baseurl)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+        Call<deliveryDetailsBean> call = cr.getDeliveryDetails(del_id);
+
+        call.enqueue(new Callback<deliveryDetailsBean>() {
+            @Override
+            public void onResponse(Call<deliveryDetailsBean> call, Response<deliveryDetailsBean> response) {
+
+                final Data item = response.body().getData();
+
+                txn.setText("#" + item.getTxn());
+                date.setText(item.getCreated());
+                status.setText(item.getStatus());
+                name.setText(item.getName());
+                address.setText(item.getAddress());
+                pay.setText(item.getPayMode());
+                slot.setText(item.getSlot());
+                amount.setText("\u20B9 " + item.getAmount());
+
+                deldate.setText(item.getDeliveryDate());
+
+                progress.setVisibility(View.GONE);
+
+
+                callphone.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        Intent intent = new Intent(Intent.ACTION_DIAL);
+                        intent.setData(Uri.parse("tel:" + item.getPhone()));
+                        startActivity(intent);
+
+                    }
+                });
+
+                if (item.getStatus().equals("pending"))
+                {
+                    startend.setText("START");
+                }
+                else
+                {
+                    startend.setText("FINISH");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<deliveryDetailsBean> call, Throwable t) {
+                progress.setVisibility(View.GONE);
+            }
+        });
+
     }
 
     @Override
@@ -122,15 +202,90 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
 
                 if (startend.getText().toString().equals("START"))
                 {
-                    if (!checkPermissions()) {
-                        requestPermissions();
-                    } else {
-                        mService.requestLocationUpdates();
-                    }
+
+                    progress.setVisibility(View.VISIBLE);
+
+                    Bean b = (Bean) getApplicationContext();
+
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(b.baseurl)
+                            .addConverterFactory(ScalarsConverterFactory.create())
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+                    Call<deliveryDetailsBean> call = cr.changeDeliveryStatus(del_id , "out for delivery");
+
+                    call.enqueue(new Callback<deliveryDetailsBean>() {
+                        @Override
+                        public void onResponse(Call<deliveryDetailsBean> call, Response<deliveryDetailsBean> response) {
+
+                            if (response.body().getStatus().equals("1"))
+                            {
+
+                                SharePreferenceUtils.getInstance().saveString("order" , order);
+
+                                if (!checkPermissions()) {
+                                    Log.d("orderrr" , order);
+
+                                    requestPermissions();
+                                } else {
+                                    mService.requestLocationUpdates();
+                                }
+                            }
+                            Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                            progress.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onFailure(Call<deliveryDetailsBean> call, Throwable t) {
+                            progress.setVisibility(View.GONE);
+                        }
+                    });
+
+
                 }
                 else
                 {
-                    mService.removeLocationUpdates();
+
+                    progress.setVisibility(View.VISIBLE);
+
+                    Bean b = (Bean) getApplicationContext();
+
+                    Retrofit retrofit = new Retrofit.Builder()
+                            .baseUrl(b.baseurl)
+                            .addConverterFactory(ScalarsConverterFactory.create())
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+
+                    AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
+
+                    Call<deliveryDetailsBean> call = cr.changeDeliveryStatus(del_id , "delivered");
+
+                    call.enqueue(new Callback<deliveryDetailsBean>() {
+                        @Override
+                        public void onResponse(Call<deliveryDetailsBean> call, Response<deliveryDetailsBean> response) {
+
+                            if (response.body().getStatus().equals("1"))
+                            {
+                                SharePreferenceUtils.getInstance().saveString("order" , "");
+                                mService.removeLocationUpdates();
+                                finish();
+                            }
+                            Toast.makeText(MainActivity.this, response.body().getMessage(), Toast.LENGTH_SHORT).show();
+
+                            progress.setVisibility(View.GONE);
+                        }
+
+                        @Override
+                        public void onFailure(Call<deliveryDetailsBean> call, Throwable t) {
+                            progress.setVisibility(View.GONE);
+                        }
+                    });
+
+
                 }
 
             }

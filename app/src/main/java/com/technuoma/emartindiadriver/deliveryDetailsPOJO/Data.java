@@ -1,9 +1,10 @@
-package com.technuoma.emartindiadriver.ordersPOJO;
+package com.technuoma.emartindiadriver.deliveryDetailsPOJO;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Datum {
+public class Data {
+
     @SerializedName("order_id")
     @Expose
     private String orderId;
@@ -136,5 +137,4 @@ public class Datum {
     public void setDeliveryDate(String deliveryDate) {
         this.deliveryDate = deliveryDate;
     }
-
 }

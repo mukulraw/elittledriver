@@ -1,6 +1,7 @@
 package com.technuoma.emartindiadriver;
 
 
+import com.technuoma.emartindiadriver.deliveryDetailsPOJO.deliveryDetailsBean;
 import com.technuoma.emartindiadriver.loginPOJO.loginBean;
 import com.technuoma.emartindiadriver.ordersPOJO.ordersBean;
 
@@ -23,6 +24,28 @@ public interface AllApiIneterface {
     @POST("emartindia/api/getOngoingDeliveries.php")
     Call<ordersBean> getOngoingDeliveries(
             @Part("id") String id
+    );
+
+    @Multipart
+    @POST("emartindia/api/getDeliveryDetails.php")
+    Call<deliveryDetailsBean> getDeliveryDetails(
+            @Part("id") String id
+    );
+
+    @Multipart
+    @POST("emartindia/api/changeDeliveryStatus.php")
+    Call<deliveryDetailsBean> changeDeliveryStatus(
+            @Part("id") String id,
+            @Part("status") String status
+    );
+
+    @Multipart
+    @POST("emartindia/api/addLogs.php")
+    Call<deliveryDetailsBean> addLogs(
+            @Part("delivery_id") String delivery_id,
+            @Part("order_id") String order_id,
+            @Part("lat") String lat,
+            @Part("lng") String lng
     );
 
 }
