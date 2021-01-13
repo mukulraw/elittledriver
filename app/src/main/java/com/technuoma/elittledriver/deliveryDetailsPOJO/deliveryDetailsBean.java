@@ -1,4 +1,4 @@
-package com.technuoma.emartindiadriver.deliveryDetailsPOJO;
+package com.technuoma.elittledriver.deliveryDetailsPOJO;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

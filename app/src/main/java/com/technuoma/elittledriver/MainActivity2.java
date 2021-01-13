@@ -1,4 +1,4 @@
-package com.technuoma.emartindiadriver;
+package com.technuoma.elittledriver;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,8 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
-
-import java.io.IOException;
 
 public class MainActivity2 extends AppCompatActivity {
 

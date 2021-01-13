@@ -1,18 +1,12 @@
-package com.technuoma.emartindiadriver;
+package com.technuoma.elittledriver;
 
-import android.app.Dialog;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -20,18 +14,13 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.technuoma.elittledriver.ordersPOJO.Datum;
+import com.technuoma.elittledriver.ordersPOJO.ordersBean;
 
-import com.technuoma.emartindiadriver.ordersPOJO.Datum;
-import com.technuoma.emartindiadriver.ordersPOJO.ordersBean;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import retrofit2.Call;
@@ -41,7 +30,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 import retrofit2.converter.scalars.ScalarsConverterFactory;
 
-public class Bills4 extends Fragment {
+public class Bills3 extends Fragment {
 
 
     RecyclerView grid;
@@ -52,6 +41,7 @@ public class Bills4 extends Fragment {
     TextView date;
     LinearLayout linear;
 
+    String dd;
 
     @Nullable
     @Override
@@ -74,14 +64,15 @@ public class Bills4 extends Fragment {
         date.setVisibility(View.GONE);
 
 
+
         return view;
     }
 
-    BroadcastReceiver singleReceiver;
 
     @Override
     public void onResume() {
         super.onResume();
+
 
 
         progress.setVisibility(View.VISIBLE);
@@ -97,7 +88,7 @@ public class Bills4 extends Fragment {
         AllApiIneterface cr = retrofit.create(AllApiIneterface.class);
 
 
-        Call<ordersBean> call = cr.getCompletedDeliveries(SharePreferenceUtils.getInstance().getString("id"));
+        Call<ordersBean> call = cr.getOngoingDeliveries(SharePreferenceUtils.getInstance().getString("id"));
 
         call.enqueue(new Callback<ordersBean>() {
             @Override
@@ -162,19 +153,19 @@ public class Bills4 extends Fragment {
 
             holder.deldate.setText(item.getDeliveryDate());
 
-
-/*
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
 
-                    Intent intent = new Intent(context , OrderDetails.class);
-                    intent.putExtra("oid" , item.getId());
+                    Log.d("order1" , item.getOrderId());
+
+                    Intent intent = new Intent(context , MainActivity.class);
+                    intent.putExtra("oid" , item.getDelId());
+                    intent.putExtra("order" , item.getOrderId());
                     startActivity(intent);
 
                 }
             });
-*/
 
 
         }
@@ -206,13 +197,6 @@ public class Bills4 extends Fragment {
         }
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(singleReceiver);
-
-    }
 
 
 }

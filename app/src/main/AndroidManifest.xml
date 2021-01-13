@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.technuoma.emartindiadriver">
+    package="com.technuoma.elittledriver">
 
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -8,22 +8,23 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".Bean"
+        android:name="com.technuoma.elittledriver.Bean"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".OrderDetails"></activity>
+        <activity android:name="com.technuoma.elittledriver.OrderDetails"
+            android:screenOrientation="portrait"/>
         <activity
-            android:name=".MainActivity2"
+            android:name="com.technuoma.elittledriver.MainActivity2"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Login"
+            android:name="com.technuoma.elittledriver.Login"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Splash"
+            android:name="com.technuoma.elittledriver.Splash"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,11 +33,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.technuoma.elittledriver.MainActivity"
             android:screenOrientation="portrait" />
 
         <service
-            android:name=".LocationUpdatesService"
+            android:name="com.technuoma.elittledriver.LocationUpdatesService"
             android:enabled="true"
             android:exported="true"
             android:foregroundServiceType="location" />

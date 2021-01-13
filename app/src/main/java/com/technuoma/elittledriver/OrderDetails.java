@@ -1,8 +1,7 @@
-package com.technuoma.emartindiadriver;
+package com.technuoma.elittledriver;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.graphics.Color;
 import android.os.Bundle;

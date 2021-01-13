@@ -1,4 +1,4 @@
-package com.technuoma.emartindiadriver;
+package com.technuoma.elittledriver;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -30,8 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.snackbar.Snackbar;
-import com.technuoma.emartindiadriver.deliveryDetailsPOJO.Data;
-import com.technuoma.emartindiadriver.deliveryDetailsPOJO.deliveryDetailsBean;
+import com.technuoma.elittledriver.deliveryDetailsPOJO.Data;
+import com.technuoma.elittledriver.deliveryDetailsPOJO.deliveryDetailsBean;
 
 import retrofit2.Call;
 import retrofit2.Callback;

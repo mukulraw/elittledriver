@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.technuoma.emartindiadriver;
+package com.technuoma.elittledriver;
 
 import android.app.ActivityManager;
 import android.app.Notification;
@@ -33,7 +33,6 @@ import android.os.HandlerThread;
 import android.os.IBinder;
 import android.os.Looper;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
@@ -46,7 +45,7 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.technuoma.emartindiadriver.deliveryDetailsPOJO.deliveryDetailsBean;
+import com.technuoma.elittledriver.deliveryDetailsPOJO.deliveryDetailsBean;
 
 import retrofit2.Call;
 import retrofit2.Callback;
